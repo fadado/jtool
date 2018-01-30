@@ -1,0 +1,29 @@
+#!/bin/bash
+
+# Usage: jtool-pager [FILENAME]
+
+FILENAME=${1:--}
+
+JQ_OPT=(
+    --indent 4 
+    --color-output
+)
+
+LESS_OPT=(
+    --chop-long-lines
+    --clear-screen
+    --hilite-search
+    --HILITE-UNREAD
+    --ignore-case
+    --LONG-PROMPT
+    --RAW-CONTROL-CHARS
+    --squeeze-blank-lines
+    --status-column
+)
+
+# Do it!
+jq ${JQ_OPT[@]} . "${FILENAME}" | less ${LESS_OPT[@]}
+
+exit
+
+# vim:syntax=sh:et:sw=4:ts=4:ai

@@ -1,3 +1,3 @@
 # jtool(s)
 
-Tools around `jq`...
+JSON tools around `jq` and other utilities.

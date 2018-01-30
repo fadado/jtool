@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# Usage: jtool-journal [OPTIONS...] [MATCHES...]
+
+JCTL_OPT=(
+    --output=json
+)
+
+# Do it!
+journalctl ${JCTL_OPT} "$@"
+
+exit
+
+# vim:syntax=sh:et:sw=4:ts=4:ai

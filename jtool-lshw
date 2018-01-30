@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# Usage: jtool-lshw [OPTIONS]
+
+LSHW_OPT=(
+    -json
+)
+
+# Only root
+(( $(id -u) == 0 )) || {
+    echo 1>&2 'Must be root!'
+    exit 1
+}
+
+# Do it!
+lshw ${LSHW_OPT} "$@"
+
+exit
+
+# vim:syntax=sh:et:sw=4:ts=4:ai

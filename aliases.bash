@@ -2,8 +2,8 @@
 
 # Usage: source aliases.bash
 
-BASE='./'
-
-alias jpg=${BASE}jtool-pager
+alias jpg=${PWD}/jtool-pager
+alias jjc=${PWD}/jtool-journal
+alias jhw=${PWD}/jtool-lshw
 
 # vim:syntax=sh:et:sw=4:ts=4:ai

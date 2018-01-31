@@ -13,7 +13,11 @@ LSHW_OPT=(
 }
 
 # Do it!
-lshw ${LSHW_OPT} "$@"
+if [[ -t 1 ]]; then
+    lshw ${LSHW_OPT} "$@" | ${0%-*}-pager
+else
+    lshw ${LSHW_OPT} "$@"
+fi
 
 exit
 

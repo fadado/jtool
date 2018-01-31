@@ -7,7 +7,11 @@ JCTL_OPT=(
 )
 
 # Do it!
-journalctl ${JCTL_OPT} "$@"
+if [[ -t 1 ]]; then
+    journalctl ${JCTL_OPT} "$@" | ${0%-*}-pager
+else
+    journalctl ${JCTL_OPT} "$@"
+fi
 
 exit
 

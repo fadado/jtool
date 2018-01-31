@@ -1,0 +1,39 @@
+#!/bin/bash
+
+# Usage: jtool-ps ...
+
+# Safety
+set -o errexit -o pipefail -o nounset -o noclobber
+
+# Bash extensions
+set +o posix
+shopt -s lastpipe
+
+# Caveat: do not work with fields with spaces inside
+function tojson
+{
+    sed -e 's/^ \+//'   \
+        -e 's/ \+$//'   \
+        -e 's/ \+/ /g'  \
+    | jq --raw-input --slurp '
+        (./"\n") as $a
+        | ($a[0]/" ") as $names
+        | ($names|length) as $nfields
+        | $a[1:][]
+        | select(. != "")
+        | (./" ") as $values
+        | reduce range($nfields) as $i
+            ({}; .[$names[$i]] = $values[$i])
+    '
+}
+
+# Do it!
+if [[ -t 1 ]]; then
+    ps "$@" | tojson | ${0%-*}-pager
+else
+    ps "$@" | tojson
+fi
+
+exit
+
+# vim:syntax=sh:et:sw=4:ts=4:ai

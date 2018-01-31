@@ -2,14 +2,23 @@
 
 # Usage: jtool-pager [FILENAME]
 
-FILENAME=${1:--}
+# Safety
+set -o errexit -o pipefail -o nounset -o noclobber
 
-JQ_OPT=(
+# Bash extensions
+set +o posix
+shopt -s lastpipe
+
+# Arguments
+declare FILENAME=${1:--}
+
+# Options
+declare -a JQ_OPT=(
     --indent 4 
     --color-output
 )
 
-LESS_OPT=(
+declare -a LESS_OPT=(
     --chop-long-lines
     --clear-screen
     --hilite-search

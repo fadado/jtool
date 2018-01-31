@@ -2,15 +2,17 @@
 
 # Usage: jtool-lshw [OPTIONS]
 
-LSHW_OPT=(
+# Safety
+set -o errexit -o pipefail -o nounset -o noclobber
+
+# Bash extensions
+set +o posix
+shopt -s lastpipe
+
+# Options
+declare -a LSHW_OPT=(
     -json
 )
-
-# Only root
-(( $(id -u) == 0 )) || {
-    echo 1>&2 'Must be root!'
-    exit 1
-}
 
 # Do it!
 if [[ -t 1 ]]; then

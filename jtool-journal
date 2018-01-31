@@ -2,7 +2,15 @@
 
 # Usage: jtool-journal [OPTIONS...] [MATCHES...]
 
-JCTL_OPT=(
+# Safety
+set -o errexit -o pipefail -o nounset -o noclobber
+
+# Bash extensions
+set +o posix
+shopt -s lastpipe
+
+# Options
+declare -a JCTL_OPT=(
     --output=json
 )
 

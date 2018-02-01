@@ -12,12 +12,13 @@ shopt -s lastpipe
 # Arguments
 declare FILENAME=${1:--}
 
-# Options
+# Options for `jq`
 declare -a JQ_OPT=(
     --indent 4 
     --color-output
 )
 
+# Options for `less`
 declare -a LESS_OPT=(
     --chop-long-lines
     --clear-screen
@@ -31,7 +32,8 @@ declare -a LESS_OPT=(
 )
 
 # Do it!
-jq ${JQ_OPT[@]} . "${FILENAME}" | less ${LESS_OPT[@]}
+jq ${JQ_OPT[@]} . "${FILENAME}" \
+| less ${LESS_OPT[@]}
 
 exit
 

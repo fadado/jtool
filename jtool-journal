@@ -15,11 +15,7 @@ declare -a JCTL_OPT=(
 )
 
 # Do it!
-if [[ -t 1 ]]; then
-    journalctl ${JCTL_OPT} "$@" | ${0%-*}-pager
-else
-    journalctl ${JCTL_OPT} "$@"
-fi
+journalctl ${JCTL_OPT} "$@"
 
 exit
 

@@ -12,9 +12,10 @@ shopt -s lastpipe
 # Caveat: do not work with fields with spaces inside
 function tojson
 {
-    sed -e 's/^ \+//'   \
-        -e 's/ \+$//'   \
-        -e 's/ \+/ /g'  \
+    sed -e 's/^[ \t]\+//'   \
+        -e 's/[ \t]\+$//'   \
+        -e '/^$/d'          \
+        -e 's/[ \t]\+/ /g'  \
     | jq --raw-input --slurp '
         (./"\n") as $a
         | ($a[0]/" ") as $names
@@ -28,11 +29,7 @@ function tojson
 }
 
 # Do it!
-if [[ -t 1 ]]; then
-    ps "$@" | tojson | ${0%-*}-pager
-else
-    ps "$@" | tojson
-fi
+ps "$@" | tojson
 
 exit
 

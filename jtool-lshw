@@ -15,11 +15,7 @@ declare -a LSHW_OPT=(
 )
 
 # Do it!
-if [[ -t 1 ]]; then
-    lshw ${LSHW_OPT} "$@" | ${0%-*}-pager
-else
-    lshw ${LSHW_OPT} "$@"
-fi
+lshw ${LSHW_OPT} "$@"
 
 exit
 

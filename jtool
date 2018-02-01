@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# Usage: jtool [OPTIONS] COMMAND
+
+# Safety
+set -o errexit -o pipefail -o nounset -o noclobber
+
+# Bash extensions
+set +o posix
+shopt -s lastpipe
+
+# Get command
+declare COMMAND=$0-${1?Expected command}
+shift
+
+# Do it!
+if [[ -t 1 ]]; then
+    ${COMMAND} "$@" | ${0}-pager
+else
+    ${COMMAND} "$@"
+fi
+
+exit
+
+# vim:syntax=sh:et:sw=4:ts=4:ai

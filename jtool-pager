@@ -31,7 +31,7 @@ declare -a LESS_OPT=(
     --status-column
 )
 
-# Do it!
+# Paginate JSON!
 jq ${JQ_OPT[@]} . "${FILENAME}" \
 | less ${LESS_OPT[@]}
 

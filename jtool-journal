@@ -14,7 +14,7 @@ declare -a JCTL_OPT=(
     --output=json
 )
 
-# Do it!
+# `journalctl` with JSON output!
 journalctl ${JCTL_OPT} "$@"
 
 exit

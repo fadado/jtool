@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Usage: jtool-ps ...
+# Usage: jtool-ps [OPTIONS]
 
 # Safety
 set -o errexit -o pipefail -o nounset -o noclobber
@@ -9,22 +9,32 @@ set -o errexit -o pipefail -o nounset -o noclobber
 set +o posix
 shopt -s lastpipe
 
-# Do it!
+# Options for `jq`
+declare -a JQ_OPT=(
+    --slurp
+    --raw-input
+    --indent 4 
+)
+
+# `ps` with JSON output!
 ps "$@"                     \
-| sed -e 's/^[ \t]\+//'     \
-    -e 's/[ \t]\+$//'       \
-    -e '/^$/d'              \
-    -e 's/[ \t]\+/ /g'      \
-| jq --raw-input --slurp    \
-'   (./"\n") as $a
-    | ($a[0]/" ") as $names
+| sed   -e 's/^[ \t]\+//'   \
+        -e 's/[ \t]\+$//'   \
+        -e '/^$/d'          \
+        -e 's/[ \t]\+/ /g'  \
+| jq ${JQ_OPT[@]}           \
+'   (./"\n") as $lines
+    | ($lines[0]/" ") as $names
     | ($names|length) as $nfields
-    | $a[1:][]
-    | select(. != "")
+    | $lines[1:-1][]
     | (./" ") as $values
     | reduce range($nfields) as $i
-        ({}; .[$names[$i]] = $values[$i])
+        ({};if $i+1 == $nfields
+            then .[$names[$i]] = ($values[$i:] | join(" "))
+            else .[$names[$i]] = $values[$i] end)
 '
+
+# Bug: do not manage spaces inside column values except in the last column.
 
 exit
 

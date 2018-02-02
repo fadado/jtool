@@ -14,7 +14,7 @@ declare -a LSHW_OPT=(
     -json
 )
 
-# Do it!
+# `lshw` with JSON output!
 lshw ${LSHW_OPT} "$@"
 
 exit

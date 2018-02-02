@@ -9,27 +9,22 @@ set -o errexit -o pipefail -o nounset -o noclobber
 set +o posix
 shopt -s lastpipe
 
-# Caveat: do not work with fields with spaces inside
-function tojson
-{
-    sed -e 's/^[ \t]\+//'   \
-        -e 's/[ \t]\+$//'   \
-        -e '/^$/d'          \
-        -e 's/[ \t]\+/ /g'  \
-    | jq --raw-input --slurp '
-        (./"\n") as $a
-        | ($a[0]/" ") as $names
-        | ($names|length) as $nfields
-        | $a[1:][]
-        | select(. != "")
-        | (./" ") as $values
-        | reduce range($nfields) as $i
-            ({}; .[$names[$i]] = $values[$i])
-    '
-}
-
 # Do it!
-ps "$@" | tojson
+ps "$@"                     \
+| sed -e 's/^[ \t]\+//'     \
+    -e 's/[ \t]\+$//'       \
+    -e '/^$/d'              \
+    -e 's/[ \t]\+/ /g'      \
+| jq --raw-input --slurp    \
+'   (./"\n") as $a
+    | ($a[0]/" ") as $names
+    | ($names|length) as $nfields
+    | $a[1:][]
+    | select(. != "")
+    | (./" ") as $values
+    | reduce range($nfields) as $i
+        ({}; .[$names[$i]] = $values[$i])
+'
 
 exit
 

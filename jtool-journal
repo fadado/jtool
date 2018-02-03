@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Usage: jtool-journal [OPTIONS...] [MATCHES...]
+# Usage: jtool-journal [OPTIONS] [MATCHES]
 
 # Safety
 set -o errexit -o pipefail -o nounset -o noclobber

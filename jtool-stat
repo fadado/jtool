@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# Usage: jtool-stat [OPTIONS] FILE...
+
+# Safety
+set -o errexit -o pipefail -o nounset -o noclobber
+
+# Bash extensions
+set +o posix
+shopt -s lastpipe
+
+# `stat` with JSON output!
+stat --printf '{
+    "mode": "%A",
+    "nlink": %h,
+    "uid": "%u",
+    "user": "%U",
+    "gid": "%g",
+    "group": "%G",
+    "size": %s,
+    "mtime": "%y",
+    "name": "%n"
+}'"\n" "$@"
+
+exit
+
+# vim:syntax=sh:et:sw=4:ts=4:ai

@@ -2,15 +2,30 @@
 
 # Usage: jtool-stat [OPTIONS] FILE...
 
-# Safety
-set -o errexit -o pipefail -o nounset -o noclobber
+########################################################################
+# Bash environment
+########################################################################
 
-# Bash extensions
+# Safety
+set -o errexit  \
+    -o pipefail \
+    -o nounset  \
+    -o noclobber
+
+# Extensions
 set +o posix
 shopt -s lastpipe
+shopt -s expand_aliases
+shopt -s extglob
+shopt -s globstar
+shopt -s nullglob
+
+########################################################################
+# Command
+########################################################################
 
 # `stat` with JSON output!
-stat --printf '{
+exec stat --printf '{
     "mode": "%A",
     "nlink": %h,
     "uid": "%u",

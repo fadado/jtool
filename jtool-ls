@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Usage: jtool-ps [OPTIONS]
+# Usage: jtool-ls [OPTIONS] FILE...
 
 ########################################################################
 # Bash environment
@@ -24,6 +24,12 @@ shopt -s nullglob
 # Command
 ########################################################################
 
+# `ls` options
+declare -a LS_OPT=(
+    -l
+    --time-style=full-iso
+)
+
 # `jq` options
 declare -a JQ_OPT=(
     --slurp
@@ -31,27 +37,30 @@ declare -a JQ_OPT=(
     --indent 4 
 )
 
-# `ps` with JSON output!
-ps "$@"                     \
-| sed   -e 's/^[ \t]\+//'   \
-        -e 's/[ \t]\+$//'   \
-        -e '/^$/d'          \
+# `ls` with JSON output!
+ls ${LS_OPT[@]} "$@"        \
+| sed   -e '1d'             \
         -e 's/[ \t]\+/ /g'  \
 | jq ${JQ_OPT[@]}           \
 '   (./"\n") as $lines
-    | ($lines[0]/" ") as $names
-    | ($names|length) as $nfields
-    | $lines[1:-1][]
-    | (./" ") as $values
-    | reduce range($nfields) as $i
-        ({};if $i+1 == $nfields
-            then .[$names[$i]] = ($values[$i:] | join(" "))
-            else .[$names[$i]] = $values[$i] end)
+    | $lines[0:-1][]
+    | (./" ") as $fields
+    | {
+        "mode": $fields[0],
+        "nlinks": $fields[1],
+        "user": $fields[2],
+        "group": $fields[3],
+        "size": $fields[4],
+        "date": $fields[5],
+        "time": $fields[6],
+        "TZ": $fields[7],
+        "name": $fields[8]
+      }
 '
 
 ########################################################################
 # Bugs:
-#   Do not manage spaces inside column values except in the last column.
+#   Do not manage spaces in file names.
 ########################################################################
 
 exit

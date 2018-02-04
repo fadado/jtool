@@ -2,20 +2,35 @@
 
 # Usage: jtool-lshw [OPTIONS]
 
-# Safety
-set -o errexit -o pipefail -o nounset -o noclobber
+########################################################################
+# Bash environment
+########################################################################
 
-# Bash extensions
+# Safety
+set -o errexit  \
+    -o pipefail \
+    -o nounset  \
+    -o noclobber
+
+# Extensions
 set +o posix
 shopt -s lastpipe
+shopt -s expand_aliases
+shopt -s extglob
+shopt -s globstar
+shopt -s nullglob
 
-# Options
+########################################################################
+# Command
+########################################################################
+
+# `lshw` options
 declare -a LSHW_OPT=(
     -json
 )
 
 # `lshw` with JSON output!
-lshw ${LSHW_OPT} "$@"
+exec lshw ${LSHW_OPT} "$@"
 
 exit
 

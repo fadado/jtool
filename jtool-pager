@@ -2,23 +2,38 @@
 
 # Usage: jtool-pager [FILENAME]
 
-# Safety
-set -o errexit -o pipefail -o nounset -o noclobber
+########################################################################
+# Bash environment
+########################################################################
 
-# Bash extensions
+# Safety
+set -o errexit  \
+    -o pipefail \
+    -o nounset  \
+    -o noclobber
+
+# Extensions
 set +o posix
 shopt -s lastpipe
+shopt -s expand_aliases
+shopt -s extglob
+shopt -s globstar
+shopt -s nullglob
+
+########################################################################
+# Command
+########################################################################
 
 # Arguments
-declare FILENAME=${1:--}
+declare FILENAME=${1:--} # `-` if not provided
 
-# Options for `jq`
+# `jq` options
 declare -a JQ_OPT=(
     --indent 4 
     --color-output
 )
 
-# Options for `less`
+# `less` options 
 declare -a LESS_OPT=(
     --chop-long-lines
     --clear-screen
@@ -32,8 +47,7 @@ declare -a LESS_OPT=(
 )
 
 # Paginate JSON!
-jq ${JQ_OPT[@]} . "${FILENAME}" \
-| less ${LESS_OPT[@]}
+jq ${JQ_OPT[@]} . "${FILENAME}" | less ${LESS_OPT[@]}
 
 exit
 

@@ -1,11 +1,12 @@
-# Short aliases for all tools
+# Short aliases for tools
 
-# Usage: source aliases.bash
+# Usage: `source aliases.bash`
 
 alias jt="${PWD}/jtool"
 alias jhw="${PWD}/jtool lshw"
 alias jjc="${PWD}/jtool journal"
-alias jpg="${PWD}/jtool-pager"
+alias jls="${PWD}/jtool ls"
+alias jpg="${PWD}/jtool pager"
 alias jps="${PWD}/jtool ps"
 alias jst="${PWD}/jtool stat"
 

@@ -2,22 +2,43 @@
 
 # Usage: jtool [OPTIONS] COMMAND
 
-# Safety
-set -o errexit -o pipefail -o nounset -o noclobber
+########################################################################
+# Bash environment
+########################################################################
 
-# Bash extensions
+# Safety
+set -o errexit  \
+    -o pipefail \
+    -o nounset  \
+    -o noclobber
+
+# Extensions
 set +o posix
 shopt -s lastpipe
+shopt -s expand_aliases
+shopt -s extglob
+shopt -s globstar
+shopt -s nullglob
+
+########################################################################
+# Parse `jtool` options
+########################################################################
+
+# getopts...
+
+########################################################################
+# Command
+########################################################################
 
 # Get command
 declare COMMAND=$0-${1?Expected command}
 shift
 
 # Call command!
-if [[ -t 1 ]]; then
+if [[ -t 1 && ${COMMAND} != *-pager ]]; then
     ${COMMAND} "$@" | ${0}-pager
 else
-    ${COMMAND} "$@"
+    exec ${COMMAND} "$@"
 fi
 
 exit

@@ -2,20 +2,59 @@
 
 # Usage: jtool-journal [OPTIONS] [MATCHES]
 
-# Safety
-set -o errexit -o pipefail -o nounset -o noclobber
+########################################################################
+# Bash environment
+########################################################################
 
-# Bash extensions
+# Safety
+set -o errexit  \
+    -o pipefail \
+    -o nounset  \
+    -o noclobber
+
+# Extensions
 set +o posix
 shopt -s lastpipe
+shopt -s expand_aliases
+shopt -s extglob
+shopt -s globstar
+shopt -s nullglob
 
-# Options
+########################################################################
+# Handle private protocol
+########################################################################
+
+#if (( $# > 0 )); then
+#    case $1 in
+#        -\?)
+#            cat <<HELP
+#jtool journal
+#   Call journalctl generating JSON output.
+#   ...
+#HELP
+#            exit 0
+#            ;;
+#        -\:)
+#            cat <<SYNOPSYS
+#jtool journal
+#   Call journalctl generating JSON output.
+#SYNOPSYS
+#            exit 0
+#            ;;
+#    esac
+#fi
+
+########################################################################
+# Command
+########################################################################
+
+# `journalctl` options
 declare -a JCTL_OPT=(
     --output=json
 )
 
 # `journalctl` with JSON output!
-journalctl ${JCTL_OPT} "$@"
+exec journalctl ${JCTL_OPT} "$@"
 
 exit
 

@@ -24,7 +24,7 @@ shopt -s nullglob
 # Handle private protocol
 ########################################################################
 
-if (( $# > 0 )); then
+if (( $# == 1 )); then
     case $1 in
         -\?)
             journalctl --help
@@ -50,7 +50,7 @@ declare -a JCTL_OPT=(
 )
 
 # `journalctl` with JSON output!
-exec journalctl ${JCTL_OPT} "$@"
+journalctl ${JCTL_OPT} "$@"
 
 exit
 

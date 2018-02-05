@@ -24,10 +24,14 @@ shopt -s nullglob
 # Handle private protocol
 ########################################################################
 
-if (( $# > 0 )); then
+if (( $# == 1 )); then
     case $1 in
         -\?)
-            ps --help all | less
+            if [[ -t 1 ]]; then
+                ps --help all | less
+            else
+                ps --help all
+            fi
             exit
             ;;
         -\:)

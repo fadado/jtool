@@ -31,14 +31,19 @@ shopt -s nullglob
 ########################################################################
 
 # Get command
-declare COMMAND=$0-${1?Expected command}
+declare COMMAND=${1?Expected command}
+declare TOOL=$0-${COMMAND}
 shift
 
+# TODO: check all!!!
+if [[ ${COMMAND} == help ]]; then
+    # $1 is defined or die...
+    $0-$1 -\?
 # Call command!
-if [[ -t 1 && ${COMMAND} != *-pager ]]; then
-    ${COMMAND} "$@" | ${0}-pager
+elif [[ -t 1 && ${TOOL} != *-pager ]]; then
+    ${TOOL} "$@" | ${0}-pager
 else
-    exec ${COMMAND} "$@"
+    ${TOOL} "$@"
 fi
 
 exit

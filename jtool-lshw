@@ -24,10 +24,14 @@ shopt -s nullglob
 # Handle private protocol
 ########################################################################
 
-if (( $# > 0 )); then
+if (( $# == 1 )); then
     case $1 in
         -\?)
-            lshw --help 2>&1 | less
+            if [[ -t 1 ]]; then
+                lshw --help 2>&1 | less
+            else
+                lshw --help 2>&1
+            fi
             exit
             ;;
         -\:)
@@ -50,7 +54,7 @@ declare -a LSHW_OPT=(
 )
 
 # `lshw` with JSON output!
-exec lshw ${LSHW_OPT} "$@"
+lshw ${LSHW_OPT} "$@"
 
 exit
 

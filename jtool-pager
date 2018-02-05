@@ -24,7 +24,7 @@ shopt -s nullglob
 # Handle private protocol
 ########################################################################
 
-if (( $# > 0 )); then
+if (( $# == 1 )); then
     case $1 in
         -\?)
             less --help
@@ -51,6 +51,7 @@ declare FILENAME=${1:--} # `-` if not provided
 declare -a JQ_OPT=(
     --indent 4 
     --color-output
+#   --compact-output    TODO: as parameter
 )
 
 # `less` options 
@@ -61,6 +62,8 @@ declare -a LESS_OPT=(
     --HILITE-UNREAD
     --ignore-case
     --LONG-PROMPT
+    --no-init
+    --quit-on-intr
     --RAW-CONTROL-CHARS
     --squeeze-blank-lines
     --status-column

@@ -6,13 +6,13 @@ The script `jtool` acts as a front-end for the rest of tools.
 
 * `jtool-journal`
 * `jtool-lshw`
+* `jtool-ls`
 * `jtool-pager`
 * `jtool-ps`
 * `jtool-stat`
 
-## Candidates to implement
+## Other candidates to implement
 
-* `ls`?
 * `lsmod`
 * `find`
 * `netstat`

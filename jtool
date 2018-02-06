@@ -18,13 +18,32 @@ shopt -s lastpipe
 shopt -s expand_aliases
 shopt -s extglob
 shopt -s globstar
-shopt -s nullglob
 
 ########################################################################
 # Parse `jtool` options
 ########################################################################
 
+alias print='echo 1>&2 -e'
+alias message='cat 1>&2'
+
+function fatal
+{
+    print "fatal: $@"
+    exit 1
+}
+
 # getopts...
+
+########################################################################
+# Builtin commands
+########################################################################
+
+function command_help
+{
+    local cmd=$1
+
+    $0-$cmd -\? | less
+}
 
 ########################################################################
 # Command
@@ -37,8 +56,11 @@ shift
 
 # TODO: check all!!!
 if [[ ${COMMAND} == help ]]; then
-    # $1 is defined or die...
-    $0-$1 -\?
+    (( $# == 1 )) || fatal 'Expected command name'
+    case $1 in
+        help) echo TODO ;;
+        *) command_help $1 ;;
+    esac
 # Call command!
 elif [[ -t 1 && ${TOOL} != *-pager ]]; then
     ${TOOL} "$@" | ${0}-pager

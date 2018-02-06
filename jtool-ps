@@ -18,24 +18,15 @@ shopt -s lastpipe
 shopt -s expand_aliases
 shopt -s extglob
 shopt -s globstar
-shopt -s nullglob
 
 ########################################################################
 # Handle private protocol
 ########################################################################
 
-if (( $# == 1 )); then
+if (( $# > 0 )); then
     case $1 in
-        -\?)
-            if [[ -t 1 ]]; then
-                ps --help all | less
-            else
-                ps --help all
-            fi
-            exit
-            ;;
-        -\:)
-            cat <<SYNOPSYS
+        -\?) exec ps --help all ;;
+        -\:) exec cat <<SYNOPSYS
 jtool CMD
    CMD sinopsys...
 SYNOPSYS

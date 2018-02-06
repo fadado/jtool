@@ -45,6 +45,37 @@ function command_help
     $0-$cmd -\? | less
 }
 
+function command_pager
+{
+    # Arguments
+    local filename=$1
+
+    # `jq` options
+    local -a JQ_OPT=(
+        --indent 4 
+        --color-output
+    #   --compact-output    TODO: as parameter
+    )
+
+    # `less` options 
+    local -a LESS_OPT=(
+        --chop-long-lines
+        --clear-screen
+        --hilite-search
+        --HILITE-UNREAD
+        --ignore-case
+        --LONG-PROMPT
+        --no-init
+        --quit-on-intr
+        --RAW-CONTROL-CHARS
+        --squeeze-blank-lines
+        --status-column
+    )
+
+    # Paginate JSON!
+    jq ${JQ_OPT[@]} . "${filename}" | less ${LESS_OPT[@]}
+}
+
 ########################################################################
 # Command
 ########################################################################
@@ -54,19 +85,25 @@ declare COMMAND=${1?Expected command}
 declare TOOL=$0-${COMMAND}
 shift
 
-# TODO: check all!!!
-if [[ ${COMMAND} == help ]]; then
-    (( $# == 1 )) || fatal 'Expected command name'
-    case $1 in
-        help) echo TODO ;;
-        *) command_help $1 ;;
-    esac
-# Call command!
-elif [[ -t 1 && ${TOOL} != *-pager ]]; then
-    ${TOOL} "$@" | ${0}-pager
-else
-    ${TOOL} "$@"
-fi
+case ${COMMAND} in
+    help)
+        (( $# == 1 )) || fatal 'Expected command name'
+        case $1 in
+            help) echo TODO ;;
+            pager) exec less --help ;;
+            *) command_help $1 ;;
+        esac
+        ;;
+    pager)
+        command_pager ${1:--}
+        ;;
+    *)
+        if [[ -t 1 ]]; then
+            ${TOOL} "$@" | command_pager -
+        else
+            ${TOOL} "$@"
+        fi
+esac
 
 exit
 

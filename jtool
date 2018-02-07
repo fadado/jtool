@@ -20,8 +20,30 @@ shopt -s extglob
 shopt -s globstar
 
 ########################################################################
-# Parse `jtool` options
+# Global declarations
 ########################################################################
+
+# `jq` options
+declare -a JQ_OPT=(
+    --indent 4 
+    --color-output
+#   --compact-output    TODO: as parameter
+)
+
+# `less` options 
+declare -a LESS_OPT=(
+    --chop-long-lines
+    --clear-screen
+    --hilite-search
+    --HILITE-UNREAD
+    --ignore-case
+    --LONG-PROMPT
+    --no-init
+    --quit-on-intr
+    --RAW-CONTROL-CHARS
+    --squeeze-blank-lines
+    --status-column
+)
 
 alias print='echo 1>&2 -e'
 alias message='cat 1>&2'
@@ -32,48 +54,31 @@ function fatal
     exit 1
 }
 
-# getopts...
-
 ########################################################################
 # Builtin commands
 ########################################################################
 
-function command_help
+function helper
 {
-    local cmd=$1
+    local tool=$1
 
-    $0-$cmd -\? | less
+    $tool -\? | less ${LESS_OPT[@]}
 }
 
-function command_pager
+function formatter
+{
+    local filename=$1
+
+    jq ${JQ_OPT[@]} . "${filename}" 
+}
+
+function pager
 {
     # Arguments
     local filename=$1
 
-    # `jq` options
-    local -a JQ_OPT=(
-        --indent 4 
-        --color-output
-    #   --compact-output    TODO: as parameter
-    )
-
-    # `less` options 
-    local -a LESS_OPT=(
-        --chop-long-lines
-        --clear-screen
-        --hilite-search
-        --HILITE-UNREAD
-        --ignore-case
-        --LONG-PROMPT
-        --no-init
-        --quit-on-intr
-        --RAW-CONTROL-CHARS
-        --squeeze-blank-lines
-        --status-column
-    )
-
     # Paginate JSON!
-    jq ${JQ_OPT[@]} . "${filename}" | less ${LESS_OPT[@]}
+    formatter "${filename}" | less ${LESS_OPT[@]}
 }
 
 ########################################################################
@@ -82,24 +87,29 @@ function command_pager
 
 # Get command
 declare COMMAND=${1?Expected command}
-declare TOOL=$0-${COMMAND}
 shift
 
 case ${COMMAND} in
     help)
         (( $# == 1 )) || fatal 'Expected command name'
-        case $1 in
-            help) echo TODO ;;
-            pager) exec less --help ;;
-            *) command_help $1 ;;
+        declare about=$1
+        case ${about} in
+            help)   # help about help
+                echo TODO ;;
+            pager)  # help about pager
+                exec less --help ;;
+            *)      # help about $about
+                declare TOOL=$0-${about}
+                helper ${TOOL} ;;
         esac
         ;;
     pager)
-        command_pager ${1:--}
+        pager ${1:--}
         ;;
     *)
+        declare TOOL=$0-${COMMAND}
         if [[ -t 1 ]]; then
-            ${TOOL} "$@" | command_pager -
+            ${TOOL} "$@" | pager -
         else
             ${TOOL} "$@"
         fi

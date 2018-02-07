@@ -31,19 +31,16 @@ declare -a JQ_OPT=(
 )
 
 # `less` options 
-declare -a LESS_OPT=(
-    --chop-long-lines
-    --clear-screen
-    --hilite-search
-    --HILITE-UNREAD
-    --ignore-case
-    --LONG-PROMPT
-    --no-init
-    --quit-on-intr
-    --RAW-CONTROL-CHARS
-    --squeeze-blank-lines
-    --status-column
-)
+export LESS=\
+'--chop-long-lines '\
+'--clear-screen '\
+'--hilite-search '\
+'--HILITE-UNREAD '\
+'--ignore-case '\
+'--LONG-PROMPT '\
+'--RAW-CONTROL-CHARS '\
+'--squeeze-blank-lines '\
+'--status-column '\
 
 alias print='echo 1>&2 -e'
 alias message='cat 1>&2'
@@ -62,7 +59,7 @@ function helper
 {
     local tool=$1
 
-    $tool -\? | less ${LESS_OPT[@]}
+    $tool -\? | less
 }
 
 function formatter
@@ -78,7 +75,7 @@ function pager
     local filename=$1
 
     # Paginate JSON!
-    formatter "${filename}" | less ${LESS_OPT[@]}
+    formatter "${filename}" | less
 }
 
 ########################################################################
@@ -95,12 +92,15 @@ case ${COMMAND} in
         declare about=$1
         case ${about} in
             help)   # help about help
-                echo TODO ;;
+                echo TODO
+                ;;
             pager)  # help about pager
-                exec less --help ;;
+                echo TODO
+                ;;
             *)      # help about $about
                 declare TOOL=$0-${about}
-                helper ${TOOL} ;;
+                helper ${TOOL}
+                ;;
         esac
         ;;
     pager)

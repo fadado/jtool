@@ -36,6 +36,25 @@ SYNOPSYS
 fi
 
 ########################################################################
+# JQ script
+########################################################################
+
+JQ_SCRIPT='/dev/fd/7'   # to close: exec 7<&-
+
+exec 7<<\JQEOF
+# input is `ps` output as a big string with spaces trimmed
+(./"\n") as $lines
+| ($lines[0]/" ") as $names
+| ($names|length) as $nfields
+| $lines[1:-1][]
+| (./" ") as $values
+| reduce range($nfields) as $i
+    ({};if $i+1 == $nfields
+        then .[$names[$i]] = ($values[$i:] | join(" "))
+        else .[$names[$i]] = $values[$i] end)
+JQEOF
+
+########################################################################
 # Command
 ########################################################################
 
@@ -44,6 +63,7 @@ declare -a JQ_OPT=(
     --slurp
     --raw-input
     --indent 4 
+    --from-file ${JQ_SCRIPT}
 )
 
 # `ps` with JSON output!
@@ -52,17 +72,7 @@ ps "$@"                     \
         -e 's/[ \t]\+$//'   \
         -e '/^$/d'          \
         -e 's/[ \t]\+/ /g'  \
-| jq ${JQ_OPT[@]}           \
-'   (./"\n") as $lines
-    | ($lines[0]/" ") as $names
-    | ($names|length) as $nfields
-    | $lines[1:-1][]
-    | (./" ") as $values
-    | reduce range($nfields) as $i
-        ({};if $i+1 == $nfields
-            then .[$names[$i]] = ($values[$i:] | join(" "))
-            else .[$names[$i]] = $values[$i] end)
-'
+| jq ${JQ_OPT[@]}
 
 ########################################################################
 # Bugs:

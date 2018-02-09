@@ -50,7 +50,7 @@ stat --printf '{
     "size": %s,
     "mtime": "%y",
     "name": "%n"
-}'"\n" ${@:-*}
+}'"\n" "${@}"
 
 exit
 

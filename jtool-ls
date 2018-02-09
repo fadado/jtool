@@ -77,11 +77,16 @@ declare -a JQ_OPT=(
     --from-file ${JQ_SCRIPT}
 )
 
+# Filter to delete 1st line and trim spaces
+declare -a SED_FILTER=(
+    -e '1d'
+    -e 's/[ \t]\+/ /g'
+)
+
 # `ls` with JSON output!
-ls ${LS_OPT[@]} "$@"        \
-| sed   -e '1d'             \
-        -e 's/[ \t]\+/ /g'  \
-| jq ${JQ_OPT[@]}
+  ls ${LS_OPT[@]} "$@"      \
+| sed "${SED_FILTER[@]}"    \
+| jq "${JQ_OPT[@]}"
 
 ########################################################################
 # Bugs:

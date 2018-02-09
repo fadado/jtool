@@ -45,7 +45,7 @@ declare -a LSHW_OPT=(
 )
 
 # `lshw` with JSON output!
-lshw ${LSHW_OPT} "$@"
+lshw "${LSHW_OPT}" "$@"
 
 exit
 

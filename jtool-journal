@@ -45,7 +45,7 @@ declare -a JCTL_OPT=(
 )
 
 # `journalctl` with JSON output!
-journalctl ${JCTL_OPT} "$@"
+journalctl "${JCTL_OPT}" "$@"
 
 exit
 

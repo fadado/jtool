@@ -66,13 +66,18 @@ declare -a JQ_OPT=(
     --from-file ${JQ_SCRIPT}
 )
 
+# Filter to trim spaces
+declare -a SED_FILTER=(
+    -e 's/^[ \t]\+//'
+    -e 's/[ \t]\+$//'
+    -e '/^$/d'
+    -e 's/[ \t]\+/ /g'
+)
+
 # `ps` with JSON output!
-ps "$@"                     \
-| sed   -e 's/^[ \t]\+//'   \
-        -e 's/[ \t]\+$//'   \
-        -e '/^$/d'          \
-        -e 's/[ \t]\+/ /g'  \
-| jq ${JQ_OPT[@]}
+  ps "$@"                   \
+| sed "${SED_FILTER[@]}"    \
+| jq "${JQ_OPT[@]}"
 
 ########################################################################
 # Bugs:

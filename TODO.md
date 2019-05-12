@@ -1,4 +1,4 @@
-# Shell tools refurbished for the JOSN era
+# Shell tools refurbished for the JSON era
 
 The script `jtool` acts as a front-end for the rest of tools.
 
